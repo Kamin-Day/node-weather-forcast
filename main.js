@@ -1,5 +1,16 @@
 // console.log("Please enter an area code to get weather information about that area.");
 // var prompt = require('prompt');
+// console.log(Math.floor(Date.now / 3600));
+// var someTime = parseInt(Date.now);
+// // console.log(someTime);
+// console.log(getTime);
+
+console.log(Date.now())
+// // date = Date.now;  
+// var time = Date.now()
+// // console.log(date)
+// console.log(time)
+// console.log(time - day)
 
 // Sets up an interface for us to read a line and gather user input
 const readline = require('readline');
@@ -15,7 +26,7 @@ const zip = readline.createInterface({
 zip.question('Please enter a 5 digit zip code containing only numbers ', (answer) => {
   // TODO: Log the answer in a database
   console.log(`You've enetered a zip code of: ${answer}`);
-  makeRequest(answer)
+  makeGeoRequest(answer)
   zip.close();
 });
 
@@ -38,18 +49,67 @@ var makeGeoRequest = function(zip){
 
 // Takes in a latitude and longitude to make a URL to request from 
 // the dark sky weather api
-var makeWeatherRequestURL = function(lat, lng){
-	return
+var makeWeatherRequestNowURL = function(lat, lng){
+	var keyDS = "bdff756c7b33041b10dcef1de7bf1fff/"
+	var exclude = "?exclude=currently,minutely,alerts,flags"
+
+	return "https://api.darksky.net/forecast/" + keyDS + lat + "," + lng 
+	// + "," + exclude
+// + (Date.now / 1000) 
 }
 
-var makeWeatherRequest = function
+var makeWeatherRequestNow = function(lat, lng){
+
+	var request = require("request");
+	var geoInfo = request(makeWeatherRequestNowURL(lat, lng), function(error, response, body) {
+	console.log(JSON.parse(body));
+	});
+}
+
+// Takes in a latitude and longitude to make a URL to request from 
+// the dark sky weather api
+var makeWeatherRequestThenURL = function(lat, lng){
+	var keyDS = "bdff756c7b33041b10dcef1de7bf1fff/"
+	var exclude = "?exclude=currently,minutely,alerts,flags"
+    // var yesterday  =(Date.now.to_i.fdiv(3600).round) * 3600
+	return "https://api.darksky.net/forecast/" + keyDS + lat + "," + lng + (Date.now() - 86400000) + exclude
+	// + "," + exclude
+// + (Date.now / 1000) 
+}
+
+var getTimeYesterday = function(){
+	Math.floor(Date.now() / 3600);
+}
+var makeWeatherRequestThen = function(lat, lng){
+	var request = require("request");
+	var geoInfo = request(makeWeatherRequestThenURL(lat, lng, getTime), function(error, response, body) {
+	console.log(JSON.parse(body));
+	});
+}
+
 var getLatLng = function(geoInfo){
 	var lat = geoInfo["results"][0]["geometry"]["location"]["lat"];
 	var lng = geoInfo["results"][0]["geometry"]["location"]["lng"];
-	console.log(typeof lat)
-	console.log(typeof lng)
+	console.log(typeof lat);
+	console.log(typeof lng);
+
+	var weatherNow = makeWeatherRequestNow(lat, lng);
+	var weatherThen = makeWeatherRequestThen(lat, lng);
 }
 
+var getTemps = function(then, now){
+	var tempThen = then;
+	var tempNow = now;
+}
+
+var getTime = function(){
+	var minute = 1000 * 60;  
+	var hour = minute * 60;
+	var day = hour * 24;  
+	var time = Date.now()
+	
+	return time - day;
+}
 // console.log(zipCode);
 // Properties to make a request for the user to enter zip code information 
 // var properties = {
